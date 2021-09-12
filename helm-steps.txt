@@ -9,4 +9,24 @@ Publish the app to charts folder
 Create the index.yaml inside the charts
 	helm repo index charts/
 	
+Publish the repo to github
+
+Publish the repo using github pages
+	Goto Settings of repo> Pages> Select branch and publish
+	Copy the published Url
+	eg: https://sonusathyadas.github.io/todoapi-helm-repo/
+
+To Install the app from repo, add the repo 
+	helm repo add <local-repo-name> <repo-path>
+	helm repo add todo-app https://sonusathyadas.github.io/todoapi-helm-repo/helm/charts
 	
+List the repos
+	helm repo list
+	
+Install from the local repo
+	Application name can be found in the index.yaml file. 
+	helm install <helm-deployment-name> <local-repo-name/application-name>
+	helm install todo-app todo-app/todoapi
+	
+to uninstall the helm deployment
+	helm uninstall <deployment-name>
