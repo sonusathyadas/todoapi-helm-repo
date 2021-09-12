@@ -1,5 +1,24 @@
+Create a new helm repo folder
+	helm create <repo-name>
+	eg: helm create todoapi-app
+	It contains the templates folder, Charts.yaml, values.yaml, Readme.md etc
+	Create the deployment yaml files in templates folder. The template variables cam be defined in values.yaml file.
+	Add the chart metadata in Chart.yaml file
+	
+Verify the template 
+	helm lint <repo-path>
+	eg: helm lint todoapi-app
+	
+View the template processed by helm
+	helm template <repo-path>
+	eg: helm template todoapi-app
 
+Directly install from the local repository
+	helm install <deployment-name> <repo-path>
+	eg: helm install todoapp ./todoapi-app
 
+Publish the helm repo publically using github and Artifact hub
+---------------------------------------------------------------
 Create a 'charts' folder to publish the helm chart 
 	mkdir charts
 Publish the app to charts folder
@@ -30,3 +49,35 @@ Install from the local repo
 	
 to uninstall the helm deployment
 	helm uninstall <deployment-name>
+	
+	
+Signin to Artifacthub
+Goto user settings> Control panel > Add repository
+	Specify the type as Helm charts, name as todopi, Display name as Todo API and url as github url of the helm repo. Add the path of the charts folder (eg: https://sonusathyadas.github.io/todoapi-helm-repo/helm/charts)
+	Save the settings
+	
+Click on the metadata file link on top of the repo. and download the artifacthub-repo.yaml file. 
+Update the artifact ID  to the artifact id copied from the newly added repo.
+for owners name add the Artifact hub account owner name and email as your artifact hub email id.
+add the artifacthub-repo.yaml to the charts folder and push the changes to github.
+
+The artifact hub will verify the changes after some time. 
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
