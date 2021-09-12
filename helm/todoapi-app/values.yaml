@@ -1,0 +1,42 @@
+
+replicaCount: 1
+
+todoapi:
+  name: todo-api
+  image: sonusathyadas/todoapi:latest
+  port: 80
+  SqlConnectionString: Data Source=mssql-service;Initial Catalog=TodoDb;Persist Security Info=True;User ID=sa;Password=Password@123
+todoservice:
+  name: todoapi-service
+  type: NodePort
+  servicePort: 80
+  containerPort: 80
+  nodePort: 32100
+sqlserver:
+  name: mssql-deployment
+  image: mcr.microsoft.com/mssql/server:2017-latest
+  port: 1433
+  pid: Developer
+  secretName: mssql
+  saPassword: Password@123
+  livenessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 15
+  readinessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 15
+  persistentVolume:
+    name: mssql-pv-volume
+    storageClassName: manual
+    storage: 10Gi
+  PersistentVolumeClaim:
+    name: mssql-data-claim
+  volumeMount:
+    name: mssql-system
+    path: /var/opt/mssql
+sqlserverservice:
+  name: mssql-service
+  type: NodePort
+  servicePort: 1433
+  containerPort: 1433
+  nodePort: 32101

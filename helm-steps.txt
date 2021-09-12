@@ -1,0 +1,12 @@
+
+
+Create a 'charts' folder to publish the helm chart 
+	mkdir charts
+Publish the app to charts folder
+	helm package <path-of-helm-chart-folder>  -d charts/
+	eg: helm package ./todoapi-app -d charts/
+	todoapi-app.0.1.0.tgz file will be created inside the charts folder
+Create the index.yaml inside the charts
+	helm repo index charts/
+	
+	

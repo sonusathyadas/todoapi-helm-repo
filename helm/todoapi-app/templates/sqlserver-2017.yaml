@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.sqlserver.persistentVolume.name}}
+  labels:
+    type: local
+spec:
+  storageClassName: {{ .Values.sqlserver.persistentVolume.storageClassName }}
+  capacity:
+    storage: {{ .Values.sqlserver.persistentVolume.storage }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.sqlserver.PersistentVolumeClaim.name }}
+spec:
+  storageClassName: {{ .Values.sqlserver.persistentVolume.storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.sqlserver.persistentVolume.storage }}
+---
+apiVersion: v1
+kind: Secret
+data:
+  SA_PASSWORD: {{ .Values.sqlserver.saPassword | b64enc }}
+metadata:
+  creationTimestamp: null
+  name: {{ .Values.sqlserver.secretName }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.sqlserver.name }}
+  labels:
+    app: sql-server
+    instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: mssql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: mssql
+        image: {{ .Values.sqlserver.image }}
+        ports:
+        - containerPort: {{ .Values.sqlserver.port }}
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: "{{ .Values.sqlserver.pid }}"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.sqlserver.secretName }}
+              key: SA_PASSWORD 
+        volumeMounts:
+        - name: {{ .Values.sqlserver.volumeMount.name }} 
+          mountPath: {{ .Values.sqlserver.volumeMount.path }} 
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.sqlserver.port }}
+          initialDelaySeconds: {{ .Values.sqlserver.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.sqlserver.livenessProbe.periodSeconds }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.sqlserver.port }}
+          initialDelaySeconds: {{ .Values.sqlserver.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.sqlserver.readinessProbe.periodSeconds }}
+      volumes:
+      - name: {{ .Values.sqlserver.volumeMount.name }} 
+        persistentVolumeClaim:
+          claimName: {{ .Values.sqlserver.PersistentVolumeClaim.name }}
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: {{ .Values.sqlserverservice.name }}
+# spec:
+#   selector:
+#     app: mssql
+#   ports:
+#     - protocol: TCP
+#       port: {{ .Values.sqlserverservice.servicePort }}
+#       targetPort: {{ .Values.sqlserverservice.containerPort }}
+#   type: {{ .Values.sqlserverservice.type }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.sqlserverservice.name }}
+spec:
+  selector:
+    app: mssql
+  type: {{ .Values.sqlserverservice.type }}
+  ports:
+    - port: {{ .Values.sqlserverservice.servicePort }}
+      targetPort: {{ .Values.sqlserverservice.containerPort }}
+      nodePort: {{ .Values.sqlserverservice.nodePort }}

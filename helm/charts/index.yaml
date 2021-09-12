@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  todoapi:
+  - apiVersion: v1
+    appVersion: 1.5.0
+    created: "2021-09-12T13:17:22.728728967+05:30"
+    description: A Helm chart for TodoAPI and SQLServer 2017
+    digest: 31660260c60c5920ab46f7015c40ff7d2d9badc8f90c175decd867e65faffba5
+    name: todoapi
+    type: application
+    urls:
+    - todoapi-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-09-12T13:17:22.727796324+05:30"

@@ -1,0 +1,21 @@
+
+Install nginx-ingress controller using Helm
+Add repo
+	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	
+Update the chart repo.
+	helm repo update
+
+Install a stable Nginx chart and test the setup. The ingress controller gets deployed in the default namespace.
+	helm install ingress-controller ingress-nginx/ingress-nginx
+	
+List hemlm installations
+	helm ls
+	
+View the deployments
+	kubectl get deployments
+	
+Remove the deployment after validation, all you have to do is uninstall the deployment using its release name.
+	helm uninstall ingress-controller
+
+	

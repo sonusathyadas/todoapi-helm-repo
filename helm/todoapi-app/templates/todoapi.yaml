@@ -1,0 +1,53 @@
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: {{ .Values.todoservice.name}}
+# spec:
+#   selector:
+#     app: todo-api
+#   ports:
+#   - protocol: TCP
+#     port: {{ .Values.todoservice.servicePort}}
+#     targetPort: {{ .Values.todoservice.containerPort}}
+#   type: {{ .Values.todoservice.type}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.todoservice.name }}
+spec:
+  selector:
+    app: todo-api
+  type: {{ .Values.todoservice.type }}
+  ports:
+    - port: {{ .Values.todoservice.servicePort }}
+      targetPort: {{ .Values.todoservice.containerPort }}
+      nodePort: {{ .Values.todoservice.nodePort }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.todoapi.name }}
+  labels:
+    app: todo-api    
+    instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: todo-api
+  template:
+    metadata:
+      labels:
+        app: todo-api
+    spec:
+      containers:
+      - name: todoapi
+        image: {{ .Values.todoapi.image }}
+        ports:
+        - containerPort: {{ .Values.todoapi.port }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: ConnectionStrings__SqlConnection
+          value: {{ .Values.todoapi.SqlConnectionString }}

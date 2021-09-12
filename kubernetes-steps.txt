@@ -1,0 +1,55 @@
+
+Download the vagrant files
+	git clone https://github.com/scriptcamp/vagrant-kubeadm-kubernetes
+	
+Move to the directory
+	cd vagrant-kubeadm-kubernetes
+	
+Create the vms using vagrant
+	vagrant up
+	
+After the VMs created check the status from the current folder
+	vagrant status
+	
+Connect to master
+	vagrant ssh master
+	
+Run kubectl commands
+	kubectl get pods --all-namespaces
+	kubectl get svc
+	kubectl get nodes
+
+Deploy nginx using yaml
+	kubectl apply -f https://raw.githubusercontent.com/scriptcamp/kubeadm-scripts/main/manifests/sample-app.yaml
+	
+	Connect to nginx using http://10.0.0.11:32000
+
+To shutdown the Kubernetes VMs, execute the halt command.
+	vagrant halt
+Whenever you need the cluster, just execute,
+	vagrant up
+	
+To destroy the VMs,
+	vagrant destroy
+	
+------------------------------
+Create a token to connect to dashboard
+	kubectl create serviceaccount dashboard-admin-sa
+	
+	kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
+	
+	kubectl get secrets
+	
+	kubectl describe secret <name-of-secret>
+	
+Run the following command from the current vagrant directory
+	kubectl proxy 
+	
+	Note: Install the kubectl tool in the current local machine
+	
+-------------------------------------------------------------
+
+Create SQL Server password
+	kubectl create secret generic mssql2 --from-literal=SA_PASSWORD="Password@123"
+	
+	
